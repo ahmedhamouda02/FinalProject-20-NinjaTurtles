@@ -1,96 +1,106 @@
 package com.example.ecommerce.user.models;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
 public class User {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
+    private String name;
 
-  @Column(unique = true, nullable = false)
-  private String email;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-  @Column(name = "password", nullable = false)
-  private String password;
+    @Column(name = "password", nullable = false)
+    private String password;
 
-  private String phoneNumber;
+    private String phoneNumber;
 
-  private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(nullable = false)
+    private String role;
 
-  private LocalDateTime updatedAt = LocalDateTime.now();
+//    private LocalDateTime createdAt = LocalDateTime.now();
 
-  // Default constructor
+//    private LocalDateTime updatedAt = LocalDateTime.now();
 
-  public User() {
-  }
+    // Default constructor
 
-  // Constructor with parameters
-  public User(String name, String email, String password, String phoneNumber) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.phoneNumber = phoneNumber;
-  }
+    public User() {
+    }
 
-  // Constructor with parameters including ID
-  public User(Long id, String name, String email, String password, String phoneNumber) {
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.phoneNumber = phoneNumber;
-  }
+    // Constructor with parameters
+    public User(String name, String email, String password, String phoneNumber, String role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
 
-  // Getters and Setters
+    // Constructor with parameters including ID
+    public User(Long id, String name, String email, String password, String phoneNumber, String role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
 
-  public Long getId() {
-    return id;
-  }
+    // Getters and Setters
 
-  public String getName() {
-    return name;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public String getPassword() {
-    return password;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    public String getPassword() {
+        return password;
+    }
 
-  public String getPhoneNumber() {
-    return phoneNumber;
-  }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-  public void setPhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
-  }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
+    public String getRole() { return role; }
+
+    public void setRole(String role) { this.role = role; }
+
+//    public LocalDateTime getCreatedAt() {
+//        return createdAt;
+//    }
+
+//    public LocalDateTime getUpdatedAt() {
+//        return updatedAt;
+//    }
 
 }
