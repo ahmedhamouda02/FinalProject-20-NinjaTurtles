@@ -23,9 +23,6 @@ public class Address {
   private String country;
   private String addressType;
 
-  private LocalDateTime createdAt = LocalDateTime.now();
-  private LocalDateTime updatedAt = LocalDateTime.now();
-
   // Default constructor
 
   public Address() {
@@ -121,14 +118,6 @@ public class Address {
 
   public void setAddressType(String addressType) {
     this.addressType = addressType;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
   }
 
 }

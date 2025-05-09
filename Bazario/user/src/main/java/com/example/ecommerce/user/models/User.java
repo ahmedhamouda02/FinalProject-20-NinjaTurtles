@@ -25,10 +25,6 @@ public class User {
     @Column(nullable = false)
     private String role;
 
-//    private LocalDateTime createdAt = LocalDateTime.now();
-
-//    private LocalDateTime updatedAt = LocalDateTime.now();
-
     // Default constructor
 
     public User() {
