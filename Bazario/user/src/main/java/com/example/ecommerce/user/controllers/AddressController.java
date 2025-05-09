@@ -18,56 +18,80 @@ public class AddressController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Address> createAddress(
+    public ResponseEntity<?> createAddress(
             @PathVariable Long userId,
             @RequestBody Address address
     ) {
-        return addressService.createAddress(userId, address)
-                .map(saved -> ResponseEntity
-                        .status(HttpStatus.CREATED)
-                        .body(saved))
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Address> created = addressService.createAddress(userId, address);
+        if (created.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(created.get());
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("User with ID " + userId + " not found");
+        }
     }
 
     // READ ALL for a user
     @GetMapping
-    public ResponseEntity<List<Address>> listAddresses(@PathVariable Long userId) {
+    public ResponseEntity<?> listAddresses(@PathVariable Long userId) {
         List<Address> addrs = addressService.getAddressesByUserId(userId);
+        if (addrs.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("No addresses found for user ID " + userId);
+        }
         return ResponseEntity.ok(addrs);
     }
 
     // READ ONE
     @GetMapping("/{addressId}")
-    public ResponseEntity<Address> getAddress(
+    public ResponseEntity<?> getAddress(
             @PathVariable Long userId,
             @PathVariable Long addressId
     ) {
         Optional<Address> addr = addressService.getAddressById(addressId);
-        return addr.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        if (addr.isPresent()) {
+            return ResponseEntity.ok(addr.get());
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Address with ID " + addressId + " not found");
+        }
     }
 
     // UPDATE
     @PutMapping("/{addressId}")
-    public ResponseEntity<Address> updateAddress(
+    public ResponseEntity<?> updateAddress(
             @PathVariable Long userId,
             @PathVariable Long addressId,
             @RequestBody Address updated
     ) {
-        return addressService.updateAddress(addressId, updated)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Address> upd = addressService.updateAddress(addressId, updated);
+        if (upd.isPresent()) {
+            return ResponseEntity.ok(upd.get());
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Cannot update — address ID " + addressId + " not found");
+        }
     }
 
     // DELETE
     @DeleteMapping("/{addressId}")
-    public ResponseEntity<Void> deleteAddress(
+    public ResponseEntity<?> deleteAddress(
             @PathVariable Long userId,
             @PathVariable Long addressId
     ) {
         boolean deleted = addressService.deleteAddress(addressId);
-        return deleted
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+        if (deleted) {
+            return ResponseEntity.ok("Address with ID " + addressId + " deleted successfully");
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Address with ID " + addressId + " not found");
+        }
     }
 }
