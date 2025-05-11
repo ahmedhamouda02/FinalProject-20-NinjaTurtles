@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/FinalProject-20-NinjaTurtles.iml" filepath="$PROJECT_DIR$/.idea/FinalProject-20-NinjaTurtles.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Bazario/productcart/productcart.iml" filepath="$PROJECT_DIR$/Bazario/productcart/productcart.iml" />
     </modules>
   </component>
 </project>
