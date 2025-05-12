@@ -16,14 +16,10 @@ public class Payment {
 
     private String paymentMethod;
 
-    // If you still want to link a refund later:
-    // @OneToOne(cascade = CascadeType.ALL)
-    // @JoinColumn(name = "refund_id")
-    // private Refund refund;
 
     public Payment() {}
 
-    // getters & setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
