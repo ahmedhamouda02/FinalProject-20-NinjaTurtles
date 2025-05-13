@@ -1,9 +1,22 @@
 // Product Table
 package com.example.ecommerce.productcart.Models;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+@Document(collection = "products")
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type" // This will be stored in Redis JSON
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ClothingProduct.class, name = "clothing"),
+        @JsonSubTypes.Type(value = ElectronicsProduct.class, name = "electronics"),
+        @JsonSubTypes.Type(value = FurnitureProduct.class, name = "furniture")
+})
 public abstract class Product {
     @Id
     private String id;

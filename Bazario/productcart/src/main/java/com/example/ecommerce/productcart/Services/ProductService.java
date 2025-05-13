@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
+import org.springframework.data.domain.Sort;
+
 
 @Service
 public class ProductService {
@@ -28,6 +30,11 @@ public class ProductService {
     @Autowired
     public ProductService(ProductFilterContext productFilterContext) {
         this.productFilterContext = productFilterContext;
+    }
+
+    public List<Product> getProductsSortedByPrice(boolean ascending) {
+        Sort sort = ascending ? Sort.by("price").ascending() : Sort.by("price").descending();
+        return productRepository.findAll(sort);
     }
 
     public List<Product> getFilteredProducts(String category) {

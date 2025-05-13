@@ -25,6 +25,12 @@ public class ProductController {
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
+    @GetMapping("/sort")
+    public List<Product> sortProductsByPrice(@RequestParam(defaultValue = "asc") String order) {
+        boolean ascending = order.equalsIgnoreCase("asc");
+        return productService.getProductsSortedByPrice(ascending);
+    }
+
 
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable String id) {

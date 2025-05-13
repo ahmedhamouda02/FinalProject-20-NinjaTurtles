@@ -1,14 +1,13 @@
 package com.example.ecommerce.productcart.Models;
 
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "products")
+@NoArgsConstructor
 public class FurnitureProduct extends Product{
     private String material;
     private String dimensions;
 
-    public FurnitureProduct() {
-    }
 
     public FurnitureProduct(String id, String name, String category, Double price, String material, String dimensions) {
         super(id, name, category, price);
