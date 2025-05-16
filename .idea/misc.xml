@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/Bazario/order/pom.xml" />
         <option value="$PROJECT_DIR$/Bazario/payment/pom.xml" />
         <option value="$PROJECT_DIR$/Bazario/productcart/pom.xml" />
+        <option value="$PROJECT_DIR$/Bazario/gateway/pom.xml" />
       </list>
     </option>
   </component>
