@@ -59,10 +59,10 @@ public class CartController {
         return ResponseEntity.ok(savedItemsService.getSavedItems(userId));
     }
 
-    @PostMapping("/save-for-later")
-    public ResponseEntity<?> saveForLater(@RequestParam String userId, @RequestParam String productId) {
-        savedItemsService.saveForLater(userId, productId);
-        return ResponseEntity.ok("Product saved for later");
+    @PostMapping("/save-for-later/{userId}")
+    public ResponseEntity<String> saveCartForLater(@PathVariable String userId) {
+        String message = cartService.saveCartForLater(userId);
+        return ResponseEntity.ok(message);
     }
 
     @PostMapping("/move-to-cart")

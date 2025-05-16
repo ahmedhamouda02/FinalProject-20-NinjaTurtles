@@ -36,31 +36,33 @@ public class ProductService {
         Sort sort = ascending ? Sort.by("price").ascending() : Sort.by("price").descending();
         return productRepository.findAll(sort);
     }
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
 
     public List<Product> getFilteredProducts(String category) {
-        List<Product> products = productRepository.findAll();  // Retrieve all products from MongoDB
+        List<Product> products = productRepository.findAll();  // Fetch from MongoDB
 
-        FilterStrategy filterStrategy;
+        try {
+            // Construct full class name using reflection
+            String className = "com.example.ecommerce.productcart.Strategy." +
+                    capitalize(category) + "FilterStrategy";
 
-        // Decide on the filter strategy based on the category
-        switch (category.toLowerCase()) {
-            case "clothing":
-                filterStrategy = new ClothingFilterStrategy();
-                break;
-            case "electronics":
-                filterStrategy = new ElectronicsFilterStrategy();
-                break;
-            case "furniture":
-                filterStrategy = new FurnitureFilterStrategy();
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid category: " + category);
+            // Dynamically load class and create instance
+            Class<?> clazz = Class.forName(className);
+            FilterStrategy filterStrategy = (FilterStrategy) clazz.getDeclaredConstructor().newInstance();
+
+            // Set and use the strategy
+            productFilterContext.setFilterStrategy(filterStrategy);
+            return productFilterContext.executeFilter(products);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("No filter strategy found for category: " + category);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to apply filter strategy: " + e.getMessage());
         }
-
-        // Set the strategy in the context and filter the products
-        productFilterContext.setFilterStrategy(filterStrategy);
-        return productFilterContext.executeFilter(products);
     }
+
 
 
     public Product createProduct(Map<String, Object> attributes) {
