@@ -2,17 +2,20 @@ package com.example.ecommerce.user.session;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 public class SessionManager {
 
-    private static SessionManager instance;
+    private static volatile SessionManager instance;
     private final ConcurrentMap<Long, Boolean> activeSessions = new ConcurrentHashMap<>();
 
     private SessionManager() {}
 
-    public static synchronized SessionManager getInstance() {
+    public static SessionManager getInstance() {
         if (instance == null) {
-            instance = new SessionManager();
+            synchronized (SessionManager.class) {
+                if (instance == null) {
+                    instance = new SessionManager();
+                }
+            }
         }
         return instance;
     }
