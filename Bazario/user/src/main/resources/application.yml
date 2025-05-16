@@ -1,0 +1,41 @@
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: user-service
+
+  redis:
+    host: localhost
+    port: 6379
+
+  session:
+    store-type: redis
+    redis:
+      namespace: "ecommerce:sessions"
+    timeout: 60m
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+  data:
+    redis:
+      host: redis_cache
+      port: 6379
+
+  cache:
+    type: redis
