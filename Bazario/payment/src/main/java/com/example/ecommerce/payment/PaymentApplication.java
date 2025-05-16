@@ -1,13 +1,13 @@
-package com.example.Paymentgp;
+package com.example.ecommerce.payment;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PaymentgpApplication {
+public class PaymentApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PaymentgpApplication.class, args);
+		SpringApplication.run(PaymentApplication.class, args);
 	}
 
 }
