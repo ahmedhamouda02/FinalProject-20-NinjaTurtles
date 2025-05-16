@@ -1,7 +1,7 @@
-package com.example.Paymentgp.command;
+package com.example.payment.command;
 
-import com.example.Paymentgp.model.Payment;
-import com.example.Paymentgp.repository.PaymentRepository;
+import com.example.payment.model.Payment;
+import com.example.payment.repository.PaymentRepository;
 
 public class NormalPaymentCommand implements PaymentCommand {
     private Payment payment;

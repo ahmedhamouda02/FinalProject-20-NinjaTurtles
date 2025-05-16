@@ -1,4 +1,4 @@
-package com.example.Paymentgp.model;
+package com.example.payment.model;
 
 import jakarta.persistence.*;
 

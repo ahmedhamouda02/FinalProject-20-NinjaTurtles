@@ -1,11 +1,11 @@
-package com.example.Paymentgp.controller;
+package com.example.payment.controller;
 
-import com.example.Paymentgp.model.Payment;
-import com.example.Paymentgp.model.DiscountCode;
-import com.example.Paymentgp.service.PaymentService;
-import com.example.Paymentgp.strategy.PaymentStrategy;
-import com.example.Paymentgp.strategy.CreditCardPayment;
-import com.example.Paymentgp.strategy.PayPalPayment;
+import com.example.payment.model.Payment;
+import com.example.payment.model.DiscountCode;
+import com.example.payment.service.PaymentService;
+import com.example.payment.strategy.PaymentStrategy;
+import com.example.payment.strategy.CreditCardPayment;
+import com.example.payment.strategy.PayPalPayment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
