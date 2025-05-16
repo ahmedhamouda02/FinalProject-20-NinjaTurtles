@@ -8,12 +8,19 @@ import com.example.Paymentgp.command.PaymentCommand;
 import com.example.Paymentgp.strategy.PaymentStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.Paymentgp.rabbitmq.RabbitMQProducer;
 
 @Service
 public class PaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+
+    private RabbitMQProducer rabbitMQProducer;
+    @Autowired
+    public PaymentService(RabbitMQProducer rabbitMQProducer) {
+        this.rabbitMQProducer = rabbitMQProducer;
+    }
 
     public String processPayment(Payment payment, PaymentStrategy paymentStrategy) {
         paymentStrategy.pay();
@@ -24,7 +31,7 @@ public class PaymentService {
             paymentCommand = new NormalPaymentCommand(payment, paymentRepository);
         }
         paymentCommand.execute();
-
+        rabbitMQProducer.sendToOrder("Payment processed successfully!");
         return "Payment processed successfully!";
     }
 
