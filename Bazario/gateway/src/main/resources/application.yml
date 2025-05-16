@@ -17,7 +17,7 @@ spring:
         - id: productcart-service
           uri: http://localhost:8082        # ProductCart service
           predicates:
-            - Path=/carts/**
+            - Path=/carts/**, /products/**
 
         - id: payment-service
           uri: http://localhost:8083        # Payment service
