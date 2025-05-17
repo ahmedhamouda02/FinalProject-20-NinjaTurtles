@@ -10,6 +10,7 @@
         <module name="payment" />
         <module name="user" />
         <module name="gateway" />
+        <module name="Paymentgp" />
         <module name="order" />
       </profile>
       <profile name="Annotation profile for productcart" enabled="true">
@@ -25,6 +26,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Paymentgp" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="order" options="-parameters" />
       <module name="payment" options="-parameters" />

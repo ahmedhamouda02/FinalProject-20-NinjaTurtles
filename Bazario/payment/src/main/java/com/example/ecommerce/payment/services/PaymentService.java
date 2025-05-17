@@ -8,6 +8,7 @@ import com.example.ecommerce.payment.command.PaymentCommand;
 import com.example.ecommerce.payment.strategy.PaymentStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.ecommerce.payment.rabbitmq.RabbitMQProducer;
 
 @Service
 public class PaymentService {
@@ -15,6 +16,11 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    private RabbitMQProducer rabbitMQProducer;
+    @Autowired
+    public PaymentService(RabbitMQProducer rabbitMQProducer) {
+        this.rabbitMQProducer = rabbitMQProducer;
+    }
     public String processPayment(Payment payment, PaymentStrategy paymentStrategy) {
         paymentStrategy.pay();
         PaymentCommand paymentCommand;
@@ -24,7 +30,7 @@ public class PaymentService {
             paymentCommand = new NormalPaymentCommand(payment, paymentRepository);
         }
         paymentCommand.execute();
-
+        rabbitMQProducer.sendToOrder("Payment processed successfully!");
         return "Payment processed successfully!";
     }
 
