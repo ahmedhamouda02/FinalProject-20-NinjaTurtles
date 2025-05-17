@@ -1,4 +1,4 @@
-package com.example.payment.strategy;
+package com.example.ecommerce.payment.strategy;
 
 public interface PaymentStrategy {
     void pay(); // Payment technique

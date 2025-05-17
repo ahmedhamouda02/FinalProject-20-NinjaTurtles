@@ -1,11 +1,11 @@
-package com.example.payment.service;
+package com.example.ecommerce.payment.services;
 
-import com.example.payment.model.Payment;
-import com.example.payment.repository.PaymentRepository;
-import com.example.payment.command.NormalPaymentCommand;
-import com.example.payment.command.DiscountPaymentCommand;
-import com.example.payment.command.PaymentCommand;
-import com.example.payment.strategy.PaymentStrategy;
+import com.example.ecommerce.payment.command.DiscountPaymentCommand;
+import com.example.ecommerce.payment.command.NormalPaymentCommand;
+import com.example.ecommerce.payment.models.Payment;
+import com.example.ecommerce.payment.repositories.PaymentRepository;
+import com.example.ecommerce.payment.command.PaymentCommand;
+import com.example.ecommerce.payment.strategy.PaymentStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

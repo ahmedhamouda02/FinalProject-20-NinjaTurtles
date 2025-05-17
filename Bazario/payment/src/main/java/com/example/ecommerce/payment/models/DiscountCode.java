@@ -1,4 +1,4 @@
-package com.example.payment.model;
+package com.example.ecommerce.payment.models;
 
 public enum DiscountCode {
     NO_DISCOUNT(0),

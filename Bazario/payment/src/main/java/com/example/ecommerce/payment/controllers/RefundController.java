@@ -1,13 +1,13 @@
-package com.example.payment.controller;
+package com.example.ecommerce.payment.controllers;
 
-import com.example.payment.model.Payment;
-import com.example.payment.model.Refund;
-import com.example.payment.service.RefundService;
+import com.example.ecommerce.payment.services.RefundService;
+import com.example.ecommerce.payment.models.Payment;
+import com.example.ecommerce.payment.models.Refund;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/refunds")
+@RequestMapping("/refunds")
 public class RefundController {
 
     @Autowired

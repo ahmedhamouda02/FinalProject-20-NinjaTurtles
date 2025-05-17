@@ -1,4 +1,4 @@
-package com.example.payment.strategy;
+package com.example.ecommerce.payment.strategy;
 
 public class CreditCardPayment implements PaymentStrategy {
     @Override

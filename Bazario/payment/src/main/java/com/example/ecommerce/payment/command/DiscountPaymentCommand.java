@@ -1,7 +1,7 @@
-package com.example.payment.command;
+package com.example.ecommerce.payment.command;
 
-import com.example.payment.model.Payment;
-import com.example.payment.repository.PaymentRepository;
+import com.example.ecommerce.payment.models.Payment;
+import com.example.ecommerce.payment.repositories.PaymentRepository;
 
 public class DiscountPaymentCommand implements PaymentCommand {
     private final Payment payment;
