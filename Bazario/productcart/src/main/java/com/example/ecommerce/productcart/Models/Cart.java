@@ -3,24 +3,24 @@ package com.example.ecommerce.productcart.Models;
 import java.io.Serializable;
 
 public class Cart implements Serializable {
-    private String userId;
+    private Long userId;
     private String productId;
     private int quantity;
 
     public Cart() {
     }
 
-    public Cart(String userId, String productId, int quantity) {
+    public Cart(Long userId, String productId, int quantity) {
         this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

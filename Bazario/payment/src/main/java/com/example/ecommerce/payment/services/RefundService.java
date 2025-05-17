@@ -1,8 +1,8 @@
-package com.example.payment.service;
+package com.example.ecommerce.payment.services;
 
-import com.example.payment.model.Payment;
-import com.example.payment.model.Refund;
-import com.example.payment.repository.RefundRepository;
+import com.example.ecommerce.payment.models.Payment;
+import com.example.ecommerce.payment.models.Refund;
+import com.example.ecommerce.payment.repositories.RefundRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

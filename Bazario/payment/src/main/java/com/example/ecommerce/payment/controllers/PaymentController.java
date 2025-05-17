@@ -1,16 +1,16 @@
-package com.example.payment.controller;
+package com.example.ecommerce.payment.controllers;
 
-import com.example.payment.model.Payment;
-import com.example.payment.model.DiscountCode;
-import com.example.payment.service.PaymentService;
-import com.example.payment.strategy.PaymentStrategy;
-import com.example.payment.strategy.CreditCardPayment;
-import com.example.payment.strategy.PayPalPayment;
+import com.example.ecommerce.payment.services.PaymentService;
+import com.example.ecommerce.payment.strategy.CreditCardPayment;
+import com.example.ecommerce.payment.strategy.PayPalPayment;
+import com.example.ecommerce.payment.strategy.PaymentStrategy;
+import com.example.ecommerce.payment.models.Payment;
+import com.example.ecommerce.payment.models.DiscountCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("/payments")
 public class PaymentController {
 
     @Autowired
