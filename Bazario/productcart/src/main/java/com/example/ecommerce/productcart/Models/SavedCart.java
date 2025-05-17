@@ -11,16 +11,16 @@ public class SavedCart {
     @Id
     private String id;
 
-    private String userId;
+    private Long userId;
     private List<Product> products;
 
     public SavedCart() {
     }
-    public SavedCart(String userId, List<Product> products) {
+    public SavedCart(Long userId, List<Product> products) {
         this.userId = userId;
         this.products = products;
     }
-    public SavedCart(String id, String userId, List<Product> products) {
+    public SavedCart(String id, Long userId, List<Product> products) {
         this.id = id;
         this.userId = userId;
         this.products = products;
@@ -34,11 +34,11 @@ public class SavedCart {
         this.id = id;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
