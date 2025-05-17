@@ -1,13 +1,9 @@
 
 spring:
   main:
-    web-application-type: reactive
+    web-application-type: servlet
   application:
     name: user-service
-
-  redis:
-    host: localhost
-    port: 6379
 
   session:
     store-type: redis
