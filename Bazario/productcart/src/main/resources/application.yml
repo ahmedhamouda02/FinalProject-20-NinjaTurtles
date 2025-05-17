@@ -1,0 +1,20 @@
+server:
+    port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: productcart-service
+  data:
+    mongodb:
+      host: localhost
+      uri: mongodb://root:example@mongo:27017/?authSource=admin
+      database: productcart
+    redis:
+      host: redis_cache
+      port: 6379
+  cache:
+    type: redis
+
+instance_name: "Main Instance"

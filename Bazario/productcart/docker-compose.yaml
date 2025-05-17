@@ -1,0 +1,62 @@
+services:
+#  APPS
+  app1:
+    build: .
+    ports:
+      - "8082:8080"
+    environment:
+      instance_name: "Instance 1"
+    depends_on:
+      - mongo
+#
+#  app2:
+#    build: .
+#    ports:
+#      - "8081:8080"
+#    environment:
+#      instance_name: "Instance 2"
+# MongoDB
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "9000:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+## Nginx
+#  nginx:
+#    image: nginx
+#    ports:
+#      - "8000:80"
+#    volumes:
+#      - ./volumes/nginx/nginx.conf:/etc/nginx/nginx.conf
+#    depends_on:
+#      - app1
+#      - app2
+
+
+#redis
+  redis_cache:
+    image: redis:latest
+    container_name: redisCache_productcart
+    ports:
+      - "6379:6379"
+
+  redisinsight: #visualize the database beta3tna
+    image: redis/redisinsight:latest
+    container_name: redisInsight_productcart
+    ports:
+      - "5540:5540"
+    restart: always
