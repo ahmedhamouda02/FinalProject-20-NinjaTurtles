@@ -28,12 +28,12 @@ public class CartController {
     private ProductRepository productRepository;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Product>> getCart(@PathVariable String userId) {
+    public ResponseEntity<List<Product>> getCart(@PathVariable Long userId) {
         return ResponseEntity.ok(cartService.getCart(userId));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addToCart(@RequestParam String userId, @RequestParam String productId) {
+    public ResponseEntity<?> addToCart(@RequestParam Long userId, @RequestParam String productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
@@ -42,50 +42,50 @@ public class CartController {
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<?> removeProduct(@RequestParam String userId, @RequestParam String productId) {
+    public ResponseEntity<?> removeProduct(@RequestParam Long userId, @RequestParam String productId) {
         cartService.removeProduct(userId, productId);
         return ResponseEntity.ok("Product removed from cart");
     }
 
     @DeleteMapping("/clear/{userId}")
-    public ResponseEntity<?> clearCart(@PathVariable String userId) {
+    public ResponseEntity<?> clearCart(@PathVariable Long userId) {
         cartService.clearCart(userId);
         return ResponseEntity.ok("Cart cleared");
     }
 
     // New endpoints for saved items
     @GetMapping("/{userId}/saved")
-    public ResponseEntity<List<Product>> getSavedItems(@PathVariable String userId) {
+    public ResponseEntity<List<Product>> getSavedItems(@PathVariable Long userId) {
         return ResponseEntity.ok(savedItemsService.getSavedItems(userId));
     }
 
     @PostMapping("/save-for-later/{userId}")
-    public ResponseEntity<String> saveCartForLater(@PathVariable String userId) {
+    public ResponseEntity<String> saveCartForLater(@PathVariable Long userId) {
         String message = cartService.saveCartForLater(userId);
         return ResponseEntity.ok(message);
     }
 
     @PostMapping("/move-to-cart")
-    public ResponseEntity<?> moveToCart(@RequestParam String userId, @RequestParam String productId) {
+    public ResponseEntity<?> moveToCart(@RequestParam Long userId, @RequestParam String productId) {
         savedItemsService.moveToCart(userId, productId);
         return ResponseEntity.ok("Product moved to cart");
     }
 
     @DeleteMapping("/saved/remove")
-    public ResponseEntity<?> removeSavedItem(@RequestParam String userId, @RequestParam String productId) {
+    public ResponseEntity<?> removeSavedItem(@RequestParam Long userId, @RequestParam String productId) {
         savedItemsService.removeSavedItem(userId, productId);
         return ResponseEntity.ok("Saved item removed");
     }
 
     @DeleteMapping("/saved/clear/{userId}")
-    public ResponseEntity<?> clearSavedItems(@PathVariable String userId) {
+    public ResponseEntity<?> clearSavedItems(@PathVariable Long userId) {
         savedItemsService.clearSavedItems(userId);
         return ResponseEntity.ok("Saved items cleared");
     }
 
     // Checkout endpoint
     @PostMapping("/{userId}/checkout")
-    public ResponseEntity<?> checkout(@PathVariable String userId, @RequestBody Map<String, Object> checkoutDetails) {
+    public ResponseEntity<?> checkout(@PathVariable Long userId, @RequestBody Map<String, Object> checkoutDetails) {
         try {
             Map<String, Object> result = checkoutService.checkout(userId, checkoutDetails);
             return ResponseEntity.ok(result);
@@ -95,4 +95,18 @@ public class CartController {
             return ResponseEntity.internalServerError().body("Checkout failed: " + e.getMessage());
         }
     }
+
+    @PostMapping("/checkout/{userId}")
+    public ResponseEntity<?> checkoutCart(@PathVariable Long userId) {
+        try {
+            double total = cartService.checkoutCart(userId);
+            return ResponseEntity.ok(Map.of(
+                    "userId", userId,
+                    "totalPrice", total
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

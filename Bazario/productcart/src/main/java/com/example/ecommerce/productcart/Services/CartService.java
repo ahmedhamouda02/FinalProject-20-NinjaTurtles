@@ -20,11 +20,11 @@ public class CartService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    private String getCartKey(String userId) {
+    private String getCartKey(Long userId) {
         return "cart:" + userId;
     }
 
-    public List<Product> getCart(String userId) {
+    public List<Product> getCart(Long userId) {
         String key = getCartKey(userId);
         ListOperations<String, Object> listOps = redisTemplate.opsForList();
         List<Object> raw = listOps.range(key, 0, -1);
@@ -33,22 +33,22 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    public void addToCart(String userId, Product product) {
+    public void addToCart(Long userId, Product product) {
         redisTemplate.opsForList().rightPush(getCartKey(userId), product);
     }
 
-    public void removeProduct(String userId, String productId) {
+    public void removeProduct(Long userId, String productId) {
         List<Product> cart = getCart(userId);
         cart.removeIf(p -> p.getId().equals(productId));
         redisTemplate.delete(getCartKey(userId));
         cart.forEach(p -> addToCart(userId, p));
     }
 
-    public void clearCart(String userId) {
+    public void clearCart(Long userId) {
         redisTemplate.delete(getCartKey(userId));
     }
 
-    public String saveCartForLater(String userId) {
+    public String saveCartForLater(Long userId) {
         String key = getCartKey(userId);
         ListOperations<String, Object> listOps = redisTemplate.opsForList();
         List<Object> rawItems = listOps.range(key, 0, -1);
@@ -73,4 +73,17 @@ public class CartService {
 
         return "Cart saved for later successfully.";
     }
+
+    public double checkoutCart(Long userId) {
+        List<Product> cartItems = getCart(userId);
+
+        if (cartItems == null || cartItems.isEmpty()) {
+            throw new RuntimeException("Cart is empty for user: " + userId);
+        }
+
+        return cartItems.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
+    }
+
 }

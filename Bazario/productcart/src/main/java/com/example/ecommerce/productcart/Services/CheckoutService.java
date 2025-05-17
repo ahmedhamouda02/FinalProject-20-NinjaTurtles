@@ -27,7 +27,7 @@ public class CheckoutService {
     @Value("${order.service.url:http://localhost:8084/orders}")
     private String orderServiceUrl;
 
-    public Map<String, Object> checkout(String userId, Map<String, Object> checkoutDetails) {
+    public Map<String, Object> checkout(Long userId, Map<String, Object> checkoutDetails) {
         // 1. Get cart items
         List<Product> cartItems = cartService.getCart(userId);
 

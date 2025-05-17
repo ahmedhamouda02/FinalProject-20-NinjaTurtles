@@ -18,11 +18,11 @@ public class SavedItemsService {
     @Autowired
     private CartService cartService;
 
-    private String getSavedItemsKey(String userId) {
+    private String getSavedItemsKey(Long userId) {
         return "saved:" + userId;
     }
 
-    public List<Product> getSavedItems(String userId) {
+    public List<Product> getSavedItems(Long userId) {
         String key = getSavedItemsKey(userId);
         ListOperations<String, Object> listOps = redisTemplate.opsForList();
         List<Object> raw = listOps.range(key, 0, -1);
@@ -31,7 +31,7 @@ public class SavedItemsService {
                 .collect(Collectors.toList());
     }
 
-    public void saveForLater(String userId, String productId) {
+    public void saveForLater(Long userId, String productId) {
         // Get the product from the cart
         List<Product> cart = cartService.getCart(userId);
 
@@ -50,7 +50,7 @@ public class SavedItemsService {
         }
     }
 
-    public void moveToCart(String userId, String productId) {
+    public void moveToCart(Long userId, String productId) {
         // Get saved items
         List<Product> savedItems = getSavedItems(userId);
 
@@ -69,7 +69,7 @@ public class SavedItemsService {
         }
     }
 
-    public void removeSavedItem(String userId, String productId) {
+    public void removeSavedItem(Long userId, String productId) {
         List<Product> savedItems = getSavedItems(userId);
         savedItems.removeIf(p -> p.getId().equals(productId));
 
@@ -78,7 +78,7 @@ public class SavedItemsService {
         savedItems.forEach(p -> redisTemplate.opsForList().rightPush(getSavedItemsKey(userId), p));
     }
 
-    public void clearSavedItems(String userId) {
+    public void clearSavedItems(Long userId) {
         redisTemplate.delete(getSavedItemsKey(userId));
     }
 }
