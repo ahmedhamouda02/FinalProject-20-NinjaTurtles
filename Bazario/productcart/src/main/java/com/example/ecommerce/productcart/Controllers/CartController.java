@@ -109,4 +109,20 @@ public class CartController {
         }
     }
 
+    /**
+     * Process checkout with payment options
+     */
+    @PostMapping("/{userId}/checkout")
+    public ResponseEntity<?> checkout(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "NO_DISCOUNT") String discountCode,
+            @RequestParam(defaultValue = "CREDIT_CARD") String paymentMethod) {
+        try {
+            Map<String, Object> result = cartService.checkout(userId, discountCode, paymentMethod);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

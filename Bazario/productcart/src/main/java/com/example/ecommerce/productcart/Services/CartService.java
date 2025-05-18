@@ -7,8 +7,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import com.example.ecommerce.productcart.DTO.PaymentDTO;
+import com.example.ecommerce.productcart.Feign.PaymentClient;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +23,9 @@ public class CartService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private PaymentClient paymentClient;
 
     private String getCartKey(Long userId) {
         return "cart:" + userId;
@@ -84,6 +91,56 @@ public class CartService {
         return cartItems.stream()
                 .mapToDouble(Product::getPrice)
                 .sum();
+    }
+
+    /**
+     * Checkout method to process payment for items in the cart
+     * @param userId The ID of the user checking out
+     * @param discountCode The discount code to apply (NO_DISCOUNT or DISCOUNT_10)
+     * @param paymentMethod The payment method to use (PAYPAL or CREDIT_CARD)
+     * @return A map containing checkout details including payment response
+     */
+    public Map<String, Object> checkout(Long userId, String discountCode, String paymentMethod) {
+        // Get cart items
+        List<Product> cartItems = getCart(userId);
+
+        if (cartItems == null || cartItems.isEmpty()) {
+            throw new RuntimeException("Cart is empty for user: " + userId);
+        }
+
+        // Calculate total price
+        double totalPrice = cartItems.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
+
+        // Prepare payment request
+        PaymentDTO paymentRequest = new PaymentDTO(
+                totalPrice,
+                discountCode,
+                paymentMethod
+        );
+
+        // Process payment
+        String paymentResponse;
+        try {
+            paymentResponse = paymentClient.makePayment(paymentRequest);
+        } catch (Exception e) {
+            throw new RuntimeException("Payment failed: " + e.getMessage(), e);
+        }
+
+        // Clear cart after successful payment
+        clearCart(userId);
+
+        // Return checkout details
+        Map<String, Object> result = new HashMap<>();
+        result.put("userId", userId);
+        result.put("products", cartItems);
+        result.put("totalPrice", totalPrice);
+        result.put("discountCode", discountCode);
+        result.put("paymentMethod", paymentMethod);
+        result.put("paymentResponse", paymentResponse);
+
+        return result;
     }
 
 }
