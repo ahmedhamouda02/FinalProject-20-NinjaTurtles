@@ -83,18 +83,18 @@ public class CartController {
         return ResponseEntity.ok("Saved items cleared");
     }
 
-    // Checkout endpoint
-    @PostMapping("/{userId}/checkout")
-    public ResponseEntity<?> checkout(@PathVariable Long userId, @RequestBody Map<String, Object> checkoutDetails) {
-        try {
-            Map<String, Object> result = checkoutService.checkout(userId, checkoutDetails);
-            return ResponseEntity.ok(result);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Checkout failed: " + e.getMessage());
-        }
-    }
+    // // Checkout endpoint
+    // @PostMapping("/{userId}/checkout")
+    // public ResponseEntity<?> checkout(@PathVariable Long userId, @RequestBody Map<String, Object> checkoutDetails) {
+    //     try {
+    //         Map<String, Object> result = checkoutService.checkout(userId, checkoutDetails);
+    //         return ResponseEntity.ok(result);
+    //     } catch (IllegalStateException e) {
+    //         return ResponseEntity.badRequest().body(e.getMessage());
+    //     } catch (Exception e) {
+    //         return ResponseEntity.internalServerError().body("Checkout failed: " + e.getMessage());
+    //     }
+    // }
 
     @PostMapping("/checkout/{userId}")
     public ResponseEntity<?> checkoutCart(@PathVariable Long userId) {
