@@ -3,6 +3,8 @@ package com.example.ecommerce.order.service;
 import com.example.ecommerce.order.model.Order;
 import com.example.ecommerce.order.repository.OrderRepository;
 import com.example.ecommerce.order.command.*;
+import com.example.ecommerce.order.rabbitmq.RabbitMQConfig;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class OrderService {
                 .orElseGet(() -> repository.findByUserId(userId));
     }
 
+//    @RabbitListener(queues = RabbitMQConfig.PAYMENT_QUEUE)
+//    public void placeOrder1(String cart) {
+//        System.out.println( cart);
+//    }
     public void placeOrder(Order order) {
         OrderCommand placeCommand = new PlaceOrderCommand(order, repository);
         placeCommand.execute();
