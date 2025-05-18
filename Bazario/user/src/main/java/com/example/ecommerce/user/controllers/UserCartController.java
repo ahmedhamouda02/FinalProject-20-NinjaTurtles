@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user-cart") // Base path for cart-related operations in user-service
+@RequestMapping("/user-cart")
 public class UserCartController {
 
   @Autowired
