@@ -1,4 +1,8 @@
 spring:
+  amqp:
+    deserialization:
+      trust:
+        all: true
   application:
     name: order-service
   main:

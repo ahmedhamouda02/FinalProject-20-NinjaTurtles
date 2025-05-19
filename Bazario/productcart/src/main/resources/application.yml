@@ -24,7 +24,7 @@ spring:
 # Custom properties should be at the root level, not nested under spring
 payment:
   service:
-    url: http://payment-service:8080
+    url: http://host.docker.internal:8083
 
 instance_name: "Main Instance"
 

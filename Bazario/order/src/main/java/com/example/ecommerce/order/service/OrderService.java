@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +30,39 @@ public class OrderService {
 
     @RabbitListener(queues = RabbitMQConfig.PAYMENT_QUEUE)
     public void receivePaymentMessage(PaymentsDTO payment) {
-         Double amount= payment.getAmount();
-         Long userId = payment.getUserId();
-         List<ItemDTO> items = payment.getItems();
-        // *** Add your business logic here to process the payment DTO ***
-        // For example:
-        // - Update the corresponding order status based on payment.getOrderId() and payment.getStatus()
-        // - Log the payment details
-        // - Trigger further actions within the order service
+        System.out.println("Received payment message: " + payment);
+        Double amount = payment.getAmount();
+        Long userId = payment.getUserId();
+        List<ItemDTO> items = payment.getItems();
+
+        // Create new order entity
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setTotalAmount(BigDecimal.valueOf(amount));
+        order.setStatus("PLACED");  // or any initial status you want
+        order.setDetails(itemsToOrderDetails(items)); // Convert ItemDTO list to your order details format
+
+        // Place the order (uses your Command pattern)
+        placeOrder(order);
+
+        System.out.println("Order created for userId " + userId + " with amount " + amount);
     }
+
+    // Helper method to convert List<ItemDTO> to your order details format
+    private String itemsToOrderDetails(List<ItemDTO> items) {
+        if (items == null || items.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (ItemDTO item : items) {
+            sb.append(item.getName())
+                    .append(" x")
+                    .append(item.getQuantity())
+                    .append(", ");
+        }
+        // Remove last comma and space
+        if (sb.length() > 2) sb.setLength(sb.length() - 2);
+        return sb.toString();
+    }
+
     public void placeOrder(Order order) {
         OrderCommand placeCommand = new PlaceOrderCommand(order, repository);
         placeCommand.execute();
