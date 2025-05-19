@@ -104,11 +104,11 @@ public class UserController {
   }
 
   // Reset password
-  @PostMapping("/{id}/reset-password")
+  @PostMapping("/reset-password")
   public ResponseEntity<String> resetPassword(
-      @PathVariable Long id,
+      @RequestHeader("X-User-Id") Long userId,
       @RequestParam String newPassword) {
-    boolean ok = userService.resetPassword(id, newPassword);
+    boolean ok = userService.resetPassword(userId, newPassword);
     if (ok) {
       return ResponseEntity.ok("Password reset successful");
     } else {
