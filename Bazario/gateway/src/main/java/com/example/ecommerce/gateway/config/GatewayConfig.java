@@ -17,10 +17,15 @@ public class GatewayConfig {
     return builder.routes()
         .route("user-service", r -> r
             .path("/users/**", "/user-cart/**")
-            .filters(f -> f
-                .filter(jwtFilter) // no more addRequestHeader()
-            )
+            .filters(f -> f.filter(jwtFilter))
             .uri("http://localhost:8081"))
+
+        // 2) New: Cart service (also secured by JWT)
+        .route("cart-service", r -> r
+            .path("/carts/**")
+            .filters(f -> f.filter(jwtFilter))
+            .uri("http://localhost:8082"))
+
         .build();
   }
 }
