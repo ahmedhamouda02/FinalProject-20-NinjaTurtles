@@ -1,4 +1,8 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/order-sub
+    username: order-sub
+    password: new
   amqp:
     deserialization:
       trust:
@@ -7,11 +11,6 @@ spring:
     name: order-service
   main:
     web-application-type: reactive
-  datasource:
-    url: jdbc:postgresql://localhost:5432/order-sub
-    username: order-sub
-    password: new
-    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,3 +18,4 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
