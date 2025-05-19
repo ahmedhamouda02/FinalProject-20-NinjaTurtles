@@ -13,7 +13,7 @@ spring:
   data:
     mongodb:
 #      uri: mongodb://root:example@mongo:27017/?authSource=admin
-      uri: mongodb://root:example@localhost:27017/?authSource=admin
+      uri: mongodb://root:example@mongo:27017/?authSource=admin
       database: productcart
     redis:
       host: redis_cache
@@ -29,5 +29,9 @@ payment:
 instance_name: "Main Instance"
 
 feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
   httpclient:
     enabled: true
