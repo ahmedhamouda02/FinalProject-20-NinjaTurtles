@@ -65,7 +65,7 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  @Cacheable(cacheNames = "users", key = "#id", unless = "#result == null")
+  // @Cacheable(cacheNames = "users", key = "#id", unless = "#result == null")
   public Optional<User> getUserById(Long id) {
     return userRepository.findById(id);
   }
@@ -78,7 +78,7 @@ public class UserService {
     return userRepository.findById(userId).map(user -> UserFactory.createUserType(user.getRole()));
   }
 
-  @CachePut(key = "#result.id")
+  // @CachePut(key = "#result.id")
   public Optional<User> updateUser(Long id, User updatedUser) {
     // Validate email
     if (!isValidEmail(updatedUser.getEmail())) {
@@ -106,7 +106,7 @@ public class UserService {
     });
   }
 
-  @CacheEvict(key = "#id")
+  // @CacheEvict(key = "#id")
   public boolean deleteUser(Long id) {
     if (userRepository.existsById(id)) {
       userRepository.deleteById(id);

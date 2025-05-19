@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users/{userId}/addresses")
+@RequestMapping("/users/addresses")
 public class AddressController {
 
   @Autowired
@@ -19,7 +19,7 @@ public class AddressController {
   // CREATE
   @PostMapping
   public ResponseEntity<?> createAddress(
-      @PathVariable Long userId,
+      @RequestHeader(value = "X-User-Id") Long userId,
       @RequestBody Address address) {
     Optional<Address> created = addressService.createAddress(userId, address);
     if (created.isPresent()) {
@@ -35,7 +35,7 @@ public class AddressController {
 
   // READ ALL for a user
   @GetMapping
-  public ResponseEntity<?> listAddresses(@PathVariable Long userId) {
+  public ResponseEntity<?> listAddresses(@RequestHeader(value = "X-User-Id") Long userId) {
     List<Address> addrs = addressService.getAddressesByUserId(userId);
     if (addrs.isEmpty()) {
       return ResponseEntity
@@ -48,7 +48,7 @@ public class AddressController {
   // READ ONE
   @GetMapping("/{addressId}")
   public ResponseEntity<?> getAddress(
-      @PathVariable Long userId,
+      @RequestHeader(value = "X-User-Id") Long userId,
       @PathVariable Long addressId) {
     Optional<Address> addr = addressService.getAddressById(userId, addressId);
     if (addr.isPresent()) {
@@ -63,7 +63,7 @@ public class AddressController {
   // UPDATE
   @PutMapping("/{addressId}")
   public ResponseEntity<?> updateAddress(
-      @PathVariable Long userId,
+      @RequestHeader(value = "X-User-Id") Long userId,
       @PathVariable Long addressId,
       @RequestBody Address updated) {
     Optional<Address> upd = addressService.updateAddress(userId, addressId, updated);
@@ -79,7 +79,7 @@ public class AddressController {
   // DELETE
   @DeleteMapping("/{addressId}")
   public ResponseEntity<?> deleteAddress(
-      @PathVariable Long userId,
+      @RequestHeader(value = "X-User-Id") Long userId,
       @PathVariable Long addressId) {
     boolean deleted = addressService.deleteAddress(userId, addressId);
     if (deleted) {
