@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productcart-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: productcart-service
+  template:
+    metadata:
+      labels:
+        app: productcart-service
+    spec:
+      containers:
+        - name: productcart-service
+          image: andreww827/productcart-service:latest  # Replace with your actual image
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://root:example@mongo:27017/?authSource=admin
+            - name: SPRING_DATA_MONGODB_DATABASE
+              value: productcart
+            - name: SPRING_DATA_REDIS_HOST
+              value: redis
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"
+            - name: SPRING_CACHE_TYPE
+              value: redis
