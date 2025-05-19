@@ -12,82 +12,81 @@ import java.util.UUID;
 @Table(name = "orders")
 public class Order {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public UUID getUserId() {
-        return userId;
-    }
+  public Long getUserId() {
+    return userId;
+  }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
 
-    public String getStatus() {
-        return status;
-    }
+  public String getStatus() {
+    return status;
+  }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
+  public BigDecimal getTotalAmount() {
+    return totalAmount;
+  }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
+  public void setTotalAmount(BigDecimal totalAmount) {
+    this.totalAmount = totalAmount;
+  }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
 
-    @Column(nullable = false)
-    private UUID userId;
+  @Column(nullable = false)
+  private Long userId;
 
-    @Column(nullable = false)
-    private String status; // PLACED, CANCELLED
+  @Column(nullable = false)
+  private String status; // PLACED, CANCELLED
 
-    private BigDecimal totalAmount;
+  private BigDecimal totalAmount;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+  @CreationTimestamp
+  private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-    @Column(nullable = true)
-    private String details;  // Add details field
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
+  @Column(nullable = true)
+  private String details; // Add details field
 
-    public String getDetails() {
-        return details;
-    }
+  public String getDetails() {
+    return details;
+  }
 
-    public void setDetails(String details) {
-        this.details = details;
-    }
+  public void setDetails(String details) {
+    this.details = details;
+  }
 
-    // Getters and setters (or use Lombok @Data)
+  // Getters and setters (or use Lombok @Data)
 }
-

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "payment-service", url = "${payment.service.url:http://localhost:8083}")
+@FeignClient(name = "payment-service", url = "http://host.docker.internal:8083")
 public interface PaymentClient {
 
     @PostMapping("/payments")

@@ -26,6 +26,13 @@ public class GatewayConfig {
             .filters(f -> f.filter(jwtFilter))
             .uri("http://localhost:8082"))
 
+        .route("order-service", r -> r
+            .path("/orders") // exact path
+            .and()
+            .method("GET") // only GET
+            .filters(f -> f.filter(jwtFilter))
+            .uri("http://localhost:8084"))
+
         .build();
   }
 }

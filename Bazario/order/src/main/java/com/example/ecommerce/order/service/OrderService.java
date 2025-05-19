@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -23,7 +22,7 @@ public class OrderService {
         this.repository = repository;
     }
 
-    public List<Order> getOrderHistory(UUID userId, Optional<String> status) {
+    public List<Order> getOrderHistory(Long userId, Optional<String> status) {
         return status.map(s -> repository.findByUserIdAndStatus(userId, s))
                 .orElseGet(() -> repository.findByUserId(userId));
     }
