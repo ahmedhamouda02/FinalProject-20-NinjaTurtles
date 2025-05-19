@@ -1,4 +1,4 @@
-# docker-compose.yml
+version: "3.9"
 services:
   db:
     image: postgres:latest
@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: payments-sub
     ports:
       - "5434:5432"
+    networks:
+      - shared-network
 
   app:
     build: .
@@ -21,13 +23,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/payments-sub
       SPRING_DATASOURCE_USERNAME: payments-sub
       SPRING_DATASOURCE_PASSWORD: new
+      SPRING_RABBITMQ_HOST: rabbitmq
+    networks:
+      - shared-network
 
-  rabbitmq:
-    image: rabbitmq:4.0-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"     # RabbitMQ protocol (AMQP)
-      - "15672:15672"   # Management UI
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+networks:
+  shared-network:
+    external: true

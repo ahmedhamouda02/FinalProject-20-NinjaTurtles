@@ -88,5 +88,7 @@ public class Order {
     this.details = details;
   }
 
-  // Getters and setters (or use Lombok @Data)
+
+
+    // Getters and setters (or use Lombok @Data)
 }

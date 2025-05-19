@@ -1,15 +1,6 @@
 spring:
-  rabbitmq:
-    host: rabbitmq  # This should match the service name in your docker-compose.yml
-    port: 5672
-    username: guest  # Default username
-    password: guest  # Default password
-  application:
-    name: payment-service
-  main:
-    web-application-type: reactive
   datasource:
-    url: jdbc:postgresql://localhost:5432/payments-sub
+    url: jdbc:postgresql://db:5432/payments-sub
     username: payments-sub
     password: new
     driver-class-name: org.postgresql.Driver
@@ -20,3 +11,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+  application:
+    name: payment-service
+  main:
+    web-application-type: reactive
