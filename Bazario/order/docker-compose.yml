@@ -1,4 +1,4 @@
-# docker-compose.yml
+version: "3.9"
 services:
   db:
     image: postgres:latest
@@ -8,7 +8,9 @@ services:
       POSTGRES_PASSWORD: new
       POSTGRES_DB: order-sub
     ports:
-      - "5433:5432"
+      - "5435:5432"
+    networks:
+      - shared-network
 
   app:
     build: .
@@ -21,4 +23,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/order-sub
       SPRING_DATASOURCE_USERNAME: order-sub
       SPRING_DATASOURCE_PASSWORD: new
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_AMQP_DESERIALIZATION_TRUST_ALL: "true"
+    networks:
+      - shared-network
 
+networks:
+  shared-network:
+    external: true

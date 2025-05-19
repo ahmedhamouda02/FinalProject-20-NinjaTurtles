@@ -16,7 +16,7 @@ spring:
       uri: mongodb://root:example@mongo:27017/?authSource=admin
       database: productcart
     redis:
-      host: redis_cache
+      host: redisCache_productcart
       port: 6379
   cache:
     type: redis
@@ -24,7 +24,7 @@ spring:
 # Custom properties should be at the root level, not nested under spring
 payment:
   service:
-    url: http://payment-service:8080
+    url: http://host.docker.internal:8083
 
 instance_name: "Main Instance"
 

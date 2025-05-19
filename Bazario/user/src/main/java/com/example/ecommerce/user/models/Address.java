@@ -2,6 +2,8 @@ package com.example.ecommerce.user.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +16,8 @@ public class Address {
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
+  
+  @JsonIgnore
   private User user;
 
   private String street;

@@ -16,6 +16,7 @@ public class PlaceOrderCommand implements OrderCommand {
 
     @Override
     public void execute() {
+        System.out.print("In execution");
         order.setStatus("PLACED");
         repository.save(order);
         OrderStatusNotifier notifier = new OrderStatusNotifier();  // Or use dependency injection
