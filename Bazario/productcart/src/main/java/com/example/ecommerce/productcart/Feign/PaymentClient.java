@@ -5,9 +5,16 @@ import com.example.ecommerce.productcart.DTO.PaymentsDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "payment-service")
+@FeignClient(name = "payment-service", url = "${payment.service.url:http://localhost:8083}")
 public interface PaymentClient {
-    @PostMapping("/api/payments")
+
+    @PostMapping("/payments")
     String makePayment(@RequestBody PaymentsDTO payment);
+
+//     @PostMapping("/payments")
+//     String makePayment(@RequestBody PaymentDTO payment);
+
 }
