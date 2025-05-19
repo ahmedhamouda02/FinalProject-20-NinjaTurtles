@@ -84,6 +84,16 @@ public class CartService {
         return "Cart saved for later successfully.";
     }
 
+    public SavedCart getSavedCart(Long userId) {
+        return mongoTemplate.findOne(
+                org.springframework.data.mongodb.core.query.Query.query(
+                        org.springframework.data.mongodb.core.query.Criteria.where("userId").is(userId)
+                ),
+                SavedCart.class
+        );
+    }
+
+
     public double checkoutCart(Long userId) {
         List<Product> cartItems = getCart(userId);
 
