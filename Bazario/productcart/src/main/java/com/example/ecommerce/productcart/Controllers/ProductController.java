@@ -3,8 +3,10 @@ package com.example.ecommerce.productcart.Controllers;
 import com.example.ecommerce.productcart.Models.Product;
 import com.example.ecommerce.productcart.Services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,13 @@ public class ProductController {
     }
     @GetMapping("/sort")
     public List<Product> sortProductsByPrice(@RequestParam(defaultValue = "asc") String order) {
+        if (!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid sort order: please use 'asc' or 'desc'"
+            );
+        }
+
         boolean ascending = order.equalsIgnoreCase("asc");
         return productService.getProductsSortedByPrice(ascending);
     }
