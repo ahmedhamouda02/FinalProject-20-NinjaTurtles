@@ -1,6 +1,7 @@
 package com.example.ecommerce.productcart.Controllers;
 
 import com.example.ecommerce.productcart.Models.Product;
+import com.example.ecommerce.productcart.Models.SavedCart;
 import com.example.ecommerce.productcart.Services.CartService;
 import com.example.ecommerce.productcart.Services.CheckoutService;
 import com.example.ecommerce.productcart.Services.SavedItemsService;
@@ -83,6 +84,23 @@ public class CartController {
     return ResponseEntity.ok(message);
   }
 
+  @GetMapping("/saved-cart")
+  public ResponseEntity<?> getSavedCart(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId) {
+
+    Long userId = resolveUserId(headerUserId, paramUserId);
+
+    SavedCart savedCart = cartService.getSavedCart(userId);
+
+    if (savedCart == null || savedCart.getProducts() == null || savedCart.getProducts().isEmpty()) {
+      return ResponseEntity.ok("No saved cart found for userId: " + userId);
+    }
+
+    return ResponseEntity.ok(savedCart);
+  }
+
+
   @PostMapping("/move-to-cart")
   public ResponseEntity<?> moveToCart(@RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
       @RequestParam(value = "userId", required = false) Long pathUserId, @RequestParam String productId) {
@@ -106,6 +124,7 @@ public class CartController {
     savedItemsService.clearSavedItems(userId);
     return ResponseEntity.ok("Saved items cleared");
   }
+
 
   // // Checkout endpoint
   // @PostMapping("/{userId}/checkout")
