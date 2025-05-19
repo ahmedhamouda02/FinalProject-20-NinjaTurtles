@@ -3,6 +3,7 @@ package com.example.ecommerce.payment.services;
 import com.example.ecommerce.payment.DTO.PaymentsDTO;
 import com.example.ecommerce.payment.command.DiscountPaymentCommand;
 import com.example.ecommerce.payment.command.NormalPaymentCommand;
+import com.example.ecommerce.payment.models.DiscountCode;
 import com.example.ecommerce.payment.models.Payment;
 import com.example.ecommerce.payment.repositories.PaymentRepository;
 import com.example.ecommerce.payment.command.PaymentCommand;
@@ -25,23 +26,41 @@ public class PaymentService {
         this.rabbitMQProducer = rabbitMQProducer;
     }
     public String processPayment(PaymentsDTO paymentDTO) {
-         Double amount = paymentDTO.getAmount();
-         String discountCode = paymentDTO.getDiscountCode();
-         String paymentMethod = paymentDTO.getPaymentMethod();
-        Payment payment =  new Payment(amount,discountCode,paymentMethod);
+        Double amount = paymentDTO.getAmount();
+        String discountCodeST = paymentDTO.getDiscountCode();
+        String paymentMethod = paymentDTO.getPaymentMethod();
+
+        DiscountCode discountCode = DiscountCode.fromString(discountCodeST);
+
+        Payment payment = new Payment(amount, discountCodeST, paymentMethod);Double discountAmountObj = null;
+        if (discountCode != null) {
+            discountAmountObj = discountCode.getDiscountAmount();
+        }
+
+        double discountAmount = (discountAmountObj != null) ? discountAmountObj : 0.0;
+        payment.setDiscountAmount(discountAmount);
+
+
+        payment.setDiscountAmount(discountAmount);
+
         paymentRepository.save(payment);
+
         PaymentStrategy paymentStrategy = determinePaymentMethod(payment);
         paymentStrategy.pay();
+
         PaymentCommand paymentCommand;
-        if (payment.getDiscountAmount() > 0) {
+        if (discountAmount > 0) {
             paymentCommand = new DiscountPaymentCommand(payment, paymentRepository);
         } else {
             paymentCommand = new NormalPaymentCommand(payment, paymentRepository);
         }
         paymentCommand.execute();
+
         rabbitMQProducer.sendToOrder(paymentDTO);
+
         return "Payment processed successfully!";
     }
+
 
     private PaymentStrategy determinePaymentMethod(Payment payment) {
         if ("CREDIT_CARD".equalsIgnoreCase(payment.getPaymentMethod())) {

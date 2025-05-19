@@ -1,4 +1,9 @@
 spring:
+  rabbitmq:
+    host: rabbitmq  # This should match the service name in your docker-compose.yml
+    port: 5672
+    username: guest  # Default username
+    password: guest  # Default password
   application:
     name: payment-service
   main:

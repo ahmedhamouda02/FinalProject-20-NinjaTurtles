@@ -1,8 +1,10 @@
 package com.example.ecommerce.payment.DTO;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PaymentsDTO {
+public class PaymentsDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Double amount;
     private String discountCode;
     private String paymentMethod;
