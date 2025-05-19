@@ -7,48 +7,67 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-// @FeignClient(name = "productcart-service", url = "http://localhost:8080") // Replace with actual service URL or Eureka
 @FeignClient(name = "productcart-service", url = "http://host.docker.internal:8082")
-
 public interface CartClient {
 
   // Cart Endpoints
-  @GetMapping("/carts/{userId}")
-  List<Product> getCart(@PathVariable("userId") Long userId);
+  @GetMapping("/carts")
+  List<Product> getCart(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId);
 
   @PostMapping("/carts/add")
-  void addToCart(@RequestParam("userId") Long userId,
-      @RequestParam("productId") String productId);
+  void addToCart(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId,
+          @RequestParam("productId") String productId);
 
   @DeleteMapping("/carts/remove")
-  void removeProduct(@RequestParam("userId") Long userId,
-      @RequestParam("productId") String productId);
+  void removeProduct(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId,
+          @RequestParam("productId") String productId);
 
-  @DeleteMapping("/carts/clear/{userId}")
-  void clearCart(@PathVariable("userId") Long userId);
+  @DeleteMapping("/carts/clear")
+  void clearCart(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId);
 
   // Saved Items
-  @GetMapping("/carts/{userId}/saved")
-  List<Product> getSavedItems(@PathVariable("userId") Long userId);
+  @GetMapping("/carts/saved")
+  List<Product> getSavedItems(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId);
 
-  @PostMapping("/carts/save-for-later/{userId}")
-  String saveCartForLater(@PathVariable("userId") Long userId);
+  @PostMapping("/carts/save-for-later")
+  String saveCartForLater(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId);
 
   @PostMapping("/carts/move-to-cart")
-  void moveToCart(@RequestParam("userId") Long userId,
-      @RequestParam("productId") String productId);
+  void moveToCart(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId,
+          @RequestParam("productId") String productId);
 
   @DeleteMapping("/carts/saved/remove")
-  void removeSavedItem(@RequestParam("userId") Long userId,
-      @RequestParam("productId") String productId);
+  void removeSavedItem(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId,
+          @RequestParam("productId") String productId);
 
-  @DeleteMapping("/carts/saved/clear/{userId}")
-  void clearSavedItems(@PathVariable("userId") Long userId);
+  @DeleteMapping("/carts/saved/clear")
+  void clearSavedItems(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId);
 
   // Checkout
-  @PostMapping("/carts/{userId}/checkout")
-  Map<String, Object> checkout(@PathVariable("userId") Long userId,
-      @RequestBody Map<String, Object> checkoutDetails);
+  @PostMapping("/carts/checkout")
+  Map<String, Object> checkout(
+          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+          @RequestParam(value = "userId", required = false) Long paramUserId,
+          @RequestParam(defaultValue = "NO_DISCOUNT") String discountCode,
+          @RequestParam(defaultValue = "CREDIT_CARD") String paymentMethod);
 
   @PostMapping("/carts/checkout/{userId}")
   Map<String, Object> checkoutCart(@PathVariable("userId") Long userId);
