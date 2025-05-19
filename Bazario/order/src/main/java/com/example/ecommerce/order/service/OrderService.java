@@ -2,13 +2,16 @@ package com.example.ecommerce.order.service;
 
 import com.example.ecommerce.order.DTO.ItemDTO;
 import com.example.ecommerce.order.DTO.PaymentsDTO;
+import com.example.ecommerce.order.DTO.RefundDTO;
 import com.example.ecommerce.order.model.Order;
+import com.example.ecommerce.order.rabbitmq.RabbitMQProducer;
 import com.example.ecommerce.order.repository.OrderRepository;
 import com.example.ecommerce.order.command.*;
 import com.example.ecommerce.order.rabbitmq.RabbitMQConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,7 +22,12 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository repository;
-
+    private RabbitMQProducer rabbitMQProducer;
+    @Autowired
+    public OrderService(OrderRepository repository,RabbitMQProducer rabbitMQProducer) {
+        this.repository = repository;
+        this.rabbitMQProducer = rabbitMQProducer;
+    }
     public OrderService(OrderRepository repository) {
         this.repository = repository;
     }
@@ -79,6 +87,14 @@ public class OrderService {
     }
 
     public void cancelOrder(Long orderId) {
+        Optional<Order> orderOpt = repository.findById(orderId);
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get();
+            Long userId= order.getUserId();
+            Double amount = order.getTotalAmount().doubleValue();
+            RefundDTO refundDTO = new RefundDTO(userId,amount);
+            rabbitMQProducer.sendRefund(refundDTO);
+        }
         OrderCommand cancelCommand = new CancelOrderCommand(orderId, repository);
         cancelCommand.execute();
     }
