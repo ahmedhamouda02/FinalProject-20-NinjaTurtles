@@ -19,6 +19,12 @@ public class Payment {
 
     public Payment() {}
 
+    public Payment(Double amount, String discountCode, String paymentMethod) {
+        this.amount = amount;
+        this.discountCode = discountCode;
+        this.paymentMethod = paymentMethod;
+
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
