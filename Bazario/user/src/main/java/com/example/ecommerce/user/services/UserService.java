@@ -5,12 +5,11 @@ import com.example.ecommerce.user.factory.UserType;
 import com.example.ecommerce.user.models.User;
 import com.example.ecommerce.user.repositories.UserRepository;
 import com.example.ecommerce.user.session.SessionManager;
-import com.jayway.jsonpath.spi.cache.Cache;
+import com.example.ecommerce.user.utils.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.*;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +26,9 @@ public class UserService {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private CacheManager cacheManager;
+
+  @Autowired
+  private JwtUtil jwtUtil;
 
   public User createUser(User user) {
     return userRepository.save(user);
@@ -63,7 +65,7 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  @Cacheable(key = "#id", unless = "#result == null or #result.isEmpty()")
+  @Cacheable(cacheNames = "users", key = "#id", unless = "#result == null")
   public Optional<User> getUserById(Long id) {
     return userRepository.findById(id);
   }
@@ -113,32 +115,30 @@ public class UserService {
     return false;
   }
 
-  @CachePut(key = "#result.id", unless = "#result == null")
-  public User login(String email, String password) {
-    // Validate email format
+  @CachePut(cacheNames = "sessions", key = "#result")
+  public String login(String email, String password) {
     if (!isValidEmail(email)) {
       throw new IllegalArgumentException("Invalid email format.");
     }
 
-    // Validate password is not blank
     if (password == null || password.isBlank()) {
       throw new IllegalArgumentException("Password cannot be empty.");
     }
 
-    // Attempt login
-    User u = userRepository.findByEmail(email)
-        .filter(user -> passwordEncoder.matches(password, user.getPassword()))
-        .orElse(null);
+    User user = userRepository.findByEmail(email)
+        .filter(u -> passwordEncoder.matches(password, u.getPassword()))
+        .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
 
-    if (u != null) {
-      SessionManager.getInstance().loginUser(u.getId());
-    }
+    Long userId = user.getId(); // needed for @CachePut
+    SessionManager.getInstance().loginUser(userId);
 
-    return u;
+    return jwtUtil.generateToken(userId);
   }
 
-  @CacheEvict(key = "#userId")
-  public boolean logout(Long userId) {
+  @CacheEvict(cacheNames = "sessions", key = "#token")
+  public boolean logout(String token) {
+    Long userId = jwtUtil.extractUserId(token);
+
     if (!SessionManager.getInstance().isUserLoggedIn(userId)) {
       throw new IllegalStateException("User is not logged in.");
     }
@@ -148,12 +148,7 @@ public class UserService {
   }
 
   public boolean isUserLoggedIn(Long userId) {
-    org.springframework.cache.Cache cache = cacheManager.getCache("user_cache");
-    if (cache != null) {
-      return cache.get(userId) != null;
-    }
-    SessionManager.getInstance().isUserLoggedIn(userId);
-    return false;
+    return SessionManager.getInstance().isUserLoggedIn(userId);
   }
 
   @CacheEvict(key = "#id")

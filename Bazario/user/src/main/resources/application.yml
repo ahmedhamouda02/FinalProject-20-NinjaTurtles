@@ -1,4 +1,3 @@
-
 spring:
   main:
     web-application-type: servlet
@@ -33,5 +32,11 @@ spring:
       host: redis_cache
       port: 6379
 
+    rest:
+      enabled: false
+
   cache:
     type: redis
+
+jwt:
+  secret: "2Q#u8MdF3!eR9x7VaLz0XpKbYvNgTrWs"

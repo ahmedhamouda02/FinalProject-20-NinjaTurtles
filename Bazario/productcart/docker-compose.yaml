@@ -52,11 +52,11 @@ services:
     image: redis:latest
     container_name: redisCache_productcart
     ports:
-      - "6379:6379"
+      - "6378:6379"
 
   redisinsight: #visualize the database beta3tna
     image: redis/redisinsight:latest
     container_name: redisInsight_productcart
     ports:
-      - "5540:5540"
+      - "5541:5540"
     restart: always
