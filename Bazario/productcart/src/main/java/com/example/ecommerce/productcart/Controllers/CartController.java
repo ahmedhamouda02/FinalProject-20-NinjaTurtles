@@ -86,8 +86,8 @@ public class CartController {
 
   @GetMapping("/saved-cart")
   public ResponseEntity<?> getSavedCart(
-          @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
-          @RequestParam(value = "userId", required = false) Long paramUserId) {
+      @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
+      @RequestParam(value = "userId", required = false) Long paramUserId) {
 
     Long userId = resolveUserId(headerUserId, paramUserId);
 
@@ -99,7 +99,6 @@ public class CartController {
 
     return ResponseEntity.ok(savedCart);
   }
-
 
   @PostMapping("/move-to-cart")
   public ResponseEntity<?> moveToCart(@RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
@@ -124,7 +123,6 @@ public class CartController {
     savedItemsService.clearSavedItems(userId);
     return ResponseEntity.ok("Saved items cleared");
   }
-
 
   // // Checkout endpoint
   // @PostMapping("/{userId}/checkout")
@@ -161,16 +159,12 @@ public class CartController {
   public ResponseEntity<?> checkout(
       @RequestHeader(value = "X-User-Id", required = false) Long headerUserId,
       @RequestParam(value = "userId", required = false) Long pathUserId,
-
       @RequestParam(defaultValue = "NO_DISCOUNT") String discountCode,
       @RequestParam(defaultValue = "CREDIT_CARD") String paymentMethod) {
-    try {
-      Long userId = resolveUserId(headerUserId, pathUserId);
-      Map<String, Object> result = cartService.checkout(userId, discountCode, paymentMethod);
-      return ResponseEntity.ok(result);
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+
+    Long userId = resolveUserId(headerUserId, pathUserId);
+    Map<String, Object> result = cartService.checkout(userId, discountCode, paymentMethod);
+    return ResponseEntity.ok(result);
   }
 
   private Long resolveUserId(Long headerId, Long paramId) {

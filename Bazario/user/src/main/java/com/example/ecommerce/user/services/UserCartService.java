@@ -11,30 +11,34 @@ import java.util.Map;
 @Service
 public class UserCartService {
 
-    @Autowired
-    private CartClient cartClient;
+  @Autowired
+  private CartClient cartClient;
 
-    public List<Product> viewCart(Long userId) {
-        return cartClient.getCart(userId, null);
-    }
+  public List<Product> viewCart(Long userId) {
+    return cartClient.getCart(userId, null);
+  }
 
-    public void addToCart(Long userId, String productId) {
-        cartClient.addToCart(userId, null, productId);
-    }
+  public void addToCart(Long userId, String productId) {
+    cartClient.addToCart(userId, null, productId);
+  }
 
-    public void clearUserCart(Long userId) {
-        cartClient.clearCart(userId, null);
-    }
+  public void clearUserCart(Long userId) {
+    cartClient.clearCart(userId, null);
+  }
 
-    public List<Product> viewSavedItems(Long userId) {
-        return cartClient.getSavedItems(userId, null);
-    }
+  public List<Product> viewSavedItems(Long userId) {
+    return cartClient.getSavedItems(userId, null);
+  }
 
-    public void moveItemToCart(Long userId, String productId) {
-        cartClient.moveToCart(userId, null, productId);
-    }
+  public void moveItemToCart(Long userId, String productId) {
+    cartClient.moveToCart(userId, null, productId);
+  }
 
-    public Map<String, Object> checkout(Long userId) {
-        return cartClient.checkout(userId, null, "NO_DISCOUNT", "CREDIT_CARD");
+  public Map<String, Object> checkout(Long userId) {
+    try {
+      return cartClient.checkout(userId, null, "NO_DISCOUNT", "CREDIT_CARD");
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Checkout failed: Cart is empty or invalid");
     }
+  }
 }
