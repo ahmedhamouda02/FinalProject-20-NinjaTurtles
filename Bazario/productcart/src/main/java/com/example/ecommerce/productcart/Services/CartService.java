@@ -1,5 +1,7 @@
 package com.example.ecommerce.productcart.Services;
 
+import com.example.ecommerce.productcart.DTO.ItemDTO;
+import com.example.ecommerce.productcart.DTO.PaymentsDTO;
 import com.example.ecommerce.productcart.Models.Product;
 import com.example.ecommerce.productcart.Models.SavedCart;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.example.ecommerce.productcart.DTO.PaymentDTO;
 import com.example.ecommerce.productcart.Feign.PaymentClient;
 
+import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,11 +122,25 @@ public class CartService {
                 discountCode,
                 paymentMethod
         );
+        List<ItemDTO> items = cartItems.stream()
+                .map(product -> new ItemDTO(
+                        product.getName(),
+                        1, // default quantity
+                        product.getPrice()
+                ))
+                .collect(Collectors.toList());
+
+        PaymentsDTO payment = new PaymentsDTO(
+                totalPrice,
+                discountCode,
+                paymentMethod,
+                userId,
+                items);
 
         // Process payment
         String paymentResponse;
         try {
-            paymentResponse = paymentClient.makePayment(paymentRequest);
+            paymentResponse = paymentClient.makePayment(payment);
         } catch (Exception e) {
             throw new RuntimeException("Payment failed: " + e.getMessage(), e);
         }

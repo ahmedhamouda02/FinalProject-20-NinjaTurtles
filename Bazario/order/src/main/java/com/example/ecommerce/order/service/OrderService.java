@@ -1,5 +1,7 @@
 package com.example.ecommerce.order.service;
 
+import com.example.ecommerce.order.DTO.ItemDTO;
+import com.example.ecommerce.order.DTO.PaymentsDTO;
 import com.example.ecommerce.order.model.Order;
 import com.example.ecommerce.order.repository.OrderRepository;
 import com.example.ecommerce.order.command.*;
@@ -26,10 +28,17 @@ public class OrderService {
                 .orElseGet(() -> repository.findByUserId(userId));
     }
 
-//    @RabbitListener(queues = RabbitMQConfig.PAYMENT_QUEUE)
-//    public void placeOrder1(String cart) {
-//        System.out.println( cart);
-//    }
+    @RabbitListener(queues = RabbitMQConfig.PAYMENT_QUEUE)
+    public void receivePaymentMessage(PaymentsDTO payment) {
+         Double amount= payment.getAmount();
+         Long userId = payment.getUserId();
+         List<ItemDTO> items = payment.getItems();
+        // *** Add your business logic here to process the payment DTO ***
+        // For example:
+        // - Update the corresponding order status based on payment.getOrderId() and payment.getStatus()
+        // - Log the payment details
+        // - Trigger further actions within the order service
+    }
     public void placeOrder(Order order) {
         OrderCommand placeCommand = new PlaceOrderCommand(order, repository);
         placeCommand.execute();

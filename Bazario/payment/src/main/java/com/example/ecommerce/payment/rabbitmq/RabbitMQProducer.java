@@ -1,5 +1,6 @@
 package com.example.ecommerce.payment.rabbitmq;
 
+import com.example.ecommerce.payment.DTO.PaymentsDTO;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,12 +11,12 @@ public class RabbitMQProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void sendToOrder(String message) {
+    public void sendToOrder(PaymentsDTO PaymentsDTO) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.PAYMENT_ROUTING_KEY,
-                message
+                PaymentsDTO
         );
-        System.out.println(message);
+        System.out.println(PaymentsDTO);
     }
 }
