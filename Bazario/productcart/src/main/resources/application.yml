@@ -1,15 +1,19 @@
 server:
-    port: 8080
+  port: 8080
 
 spring:
   main:
     web-application-type: reactive
   application:
     name: productcart-service
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
   data:
     mongodb:
-      host: localhost
-      uri: mongodb://root:example@mongo:27017/?authSource=admin
+#      uri: mongodb://root:example@mongo:27017/?authSource=admin
+      uri: mongodb://root:example@localhost:27017/?authSource=admin
       database: productcart
     redis:
       host: redis_cache
@@ -17,4 +21,13 @@ spring:
   cache:
     type: redis
 
+# Custom properties should be at the root level, not nested under spring
+payment:
+  service:
+    url: http://payment-service:8080
+
 instance_name: "Main Instance"
+
+feign:
+  httpclient:
+    enabled: true
