@@ -28,3 +28,9 @@ spring:
           uri: http://localhost:8084        # Order service
           predicates:
             - Path=/orders/**
+      
+jwt:
+  secret: "2Q#u8MdF3!eR9x7VaLz0XpKbYvNgTrWs" # 🔐 secure, 32+ characters
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

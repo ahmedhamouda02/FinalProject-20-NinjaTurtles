@@ -1,9 +1,13 @@
 package com.example.ecommerce.user.controllers;
 
 import com.example.ecommerce.user.DTO.Product;
+import com.example.ecommerce.user.models.LoginRequest;
 import com.example.ecommerce.user.models.User;
 import com.example.ecommerce.user.services.UserCartService;
 import com.example.ecommerce.user.services.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -35,27 +39,37 @@ public class UserController {
 
   // Login user (cache on success)
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
-    User user = userService.login(email, password);
-    if (user != null) {
-      return ResponseEntity.ok("Login successful. User ID: " + user.getId());
-    } else {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+  public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    try {
+      String token = userService.login(request.getEmail(), request.getPassword());
+      return ResponseEntity.ok(Map.of("token", token));
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
     }
   }
 
   // Logout user (evicts from cache)
-  @PostMapping("/{id}/logout")
-  public ResponseEntity<String> logout(@PathVariable Long id) {
-    boolean result = userService.logout(id);
-    return result
-        ? ResponseEntity.ok("Logout successful")
-        : ResponseEntity.badRequest().body("User was not logged in or doesn't exist.");
+  @PostMapping("/logout")
+  public ResponseEntity<?> logout(
+      @RequestHeader("Authorization") String authHeader) {
+    // authHeader == "Bearer eyJ..."
+    String token = authHeader.substring(7);
+    boolean ok = userService.logout(token);
+    return ok
+        ? ResponseEntity.ok("Logged out successfully")
+        : ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body("Invalid or already logged-out session");
   }
 
-  // Check if user is logged in (based on Redis cache)
-  @GetMapping("/{id}/status")
-  public ResponseEntity<String> isLoggedIn(@PathVariable Long id) {
+  // Check if user is logged in
+  @GetMapping("/status")
+  public ResponseEntity<String> isLoggedIn(HttpServletRequest request) {
+    String userIdHeader = request.getHeader("X-User-Id");
+    if (userIdHeader == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing user ID");
+    }
+    Long id = Long.parseLong(userIdHeader);
+    System.out.println("Checking login status for user ID: " + id);
     boolean isLoggedIn = userService.isUserLoggedIn(id);
     return ResponseEntity.ok(isLoggedIn ? "User is logged in" : "User is not logged in");
   }
@@ -103,36 +117,50 @@ public class UserController {
     }
   }
 
-  @GetMapping("/viewCart/{userId}")
-  public ResponseEntity<List<Product>> viewCart(@PathVariable Long userId) {
+  /** View my cart */
+  @GetMapping("/viewCart")
+  public ResponseEntity<List<Product>> viewCart(
+      @RequestHeader("X-User-Id") Long userId) {
     return ResponseEntity.ok(userCartService.viewCart(userId));
   }
 
+  /** Add a product to my cart */
   @PostMapping("/add")
-  public ResponseEntity<String> addToCart(@RequestParam Long userId, @RequestParam String productId) {
+  public ResponseEntity<String> addToCart(
+      @RequestHeader("X-User-Id") Long userId,
+      @RequestParam String productId) {
     userCartService.addToCart(userId, productId);
     return ResponseEntity.ok("Product added to cart");
   }
 
-  @DeleteMapping("/clear/{userId}")
-  public ResponseEntity<String> clearCart(@PathVariable Long userId) {
+  /** Clear my cart */
+  @DeleteMapping("/clear")
+  public ResponseEntity<String> clearCart(
+      @RequestHeader("X-User-Id") Long userId) {
     userCartService.clearUserCart(userId);
     return ResponseEntity.ok("Cart cleared");
   }
 
-  @GetMapping("/{userId}/saved")
-  public ResponseEntity<List<Product>> viewSavedItems(@PathVariable Long userId) {
+  /** View my saved items */
+  @GetMapping("/saved")
+  public ResponseEntity<List<Product>> viewSavedItems(
+      @RequestHeader("X-User-Id") Long userId) {
     return ResponseEntity.ok(userCartService.viewSavedItems(userId));
   }
 
+  /** Move one of my saved items into the cart */
   @PostMapping("/move-to-cart")
-  public ResponseEntity<String> moveToCart(@RequestParam Long userId, @RequestParam String productId) {
+  public ResponseEntity<String> moveToCart(
+      @RequestHeader("X-User-Id") Long userId,
+      @RequestParam String productId) {
     userCartService.moveItemToCart(userId, productId);
     return ResponseEntity.ok("Product moved to cart");
   }
 
-  @PostMapping("/checkout/{userId}")
-  public ResponseEntity<Map<String, Object>> checkout(@PathVariable Long userId) {
+  /** Checkout my cart */
+  @PostMapping("/checkout")
+  public ResponseEntity<Map<String, Object>> checkout(
+      @RequestHeader("X-User-Id") Long userId) {
     return ResponseEntity.ok(userCartService.checkout(userId));
   }
 }
