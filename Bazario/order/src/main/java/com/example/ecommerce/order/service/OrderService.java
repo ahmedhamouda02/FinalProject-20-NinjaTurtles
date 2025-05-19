@@ -6,8 +6,9 @@ import com.example.ecommerce.order.model.Order;
 import com.example.ecommerce.order.repository.OrderRepository;
 import com.example.ecommerce.order.command.*;
 import com.example.ecommerce.order.rabbitmq.RabbitMQConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,23 +30,32 @@ public class OrderService {
     }
 
     @RabbitListener(queues = RabbitMQConfig.PAYMENT_QUEUE)
-    public void receivePaymentMessage(PaymentsDTO payment) {
-        System.out.println("Received payment message: " + payment);
-        Double amount = payment.getAmount();
-        Long userId = payment.getUserId();
-        List<ItemDTO> items = payment.getItems();
+    public void receivePaymentMessage(String json) {
+        try {
+            System.out.println("Received payment message JSON: " + json);
 
-        // Create new order entity
-        Order order = new Order();
-        order.setUserId(userId);
-        order.setTotalAmount(BigDecimal.valueOf(amount));
-        order.setStatus("PLACED");  // or any initial status you want
-        order.setDetails(itemsToOrderDetails(items)); // Convert ItemDTO list to your order details format
+            ObjectMapper mapper = new ObjectMapper();
+            System.out.println("Received JSON: " + json);
+            PaymentsDTO paymentdto = new ObjectMapper().readValue(json, PaymentsDTO.class);
 
-        // Place the order (uses your Command pattern)
-        placeOrder(order);
+            Double amount = paymentdto.getAmount();
+            Long userId = paymentdto.getUserId();
+            List<ItemDTO> items = paymentdto.getItems();
 
-        System.out.println("Order created for userId " + userId + " with amount " + amount);
+            // Create new order entity
+            Order order = new Order();
+            order.setUserId(userId);
+            order.setTotalAmount(BigDecimal.valueOf(amount));
+            order.setStatus("PLACED");  // or any initial status you want
+            order.setDetails(itemsToOrderDetails(items)); // Convert ItemDTO list to your order details format
+
+            // Place the order (uses your Command pattern)
+            placeOrder(order);
+
+            System.out.println("Order created for userId " + userId + " with amount " + amount);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     // Helper method to convert List<ItemDTO> to your order details format
